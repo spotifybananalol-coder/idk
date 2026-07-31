@@ -20,29 +20,11 @@ local function sc(ct,d)
 	end
 end
 sc(game,0)
-LP.ChildAdded:Connect(function(c)if c.Name=="states"then imp={};task.wait(1)end end)
-local function watchStates()
-	local s=LP:FindFirstChild("states")
-	if not s then return end
-	local function onNew(v)
-		imp={}
-	end
-	for _,c in ipairs(s:GetDescendants())do
-		if c.ClassName=="BoolValue"and c.Name=="Alive"then
-			c.Changed:Connect(function(v)
-				if v==true then imp={}end
-			end)
-		end
-		if c.ClassName=="BoolValue"and c.Name=="InGame"then
-			c.Changed:Connect(function(v)
-				if v==true then imp={}end
-			end)
-		end
-	end
-	s.DescendantAdded:Connect(onNew)
-end
-LP.ChildAdded:Connect(function(c)if c.Name=="states"then task.wait(0.5);watchStates()end end)
-task.spawn(function()while true do task.wait(3);watchStates()end end)
+
+-- reset each round: states appears at round start
+LP.ChildAdded:Connect(function(c)
+	if c.Name=="states" then imp={} end
+end)
 
 local Gui=Instance.new("ScreenGui",pg)
 local Box=Instance.new("Frame",Gui)

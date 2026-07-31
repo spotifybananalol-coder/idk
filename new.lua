@@ -1,5 +1,3 @@
-aggable (header + list both drag) with a clear drag handle:
-
 local P=game:GetService("Players");local LP=P.LocalPlayer
 local pg=LP:WaitForChild("PlayerGui")
 local imp={}
@@ -30,48 +28,13 @@ LP.ChildAdded:Connect(function(c)if c.Name=="states"then imp={}end end)
 
 local Gui=Instance.new("ScreenGui",pg)
 local Box=Instance.new("Frame",Gui)
-Box.Size=UDim2.new(0,300,0,320)
-Box.Position=UDim2.new(1,-310,0,10)
-Box.BackgroundColor3=Color3.fromRGB(8,8,8)
-Box.BackgroundTransparency=0.15
-Box.BorderSizePixel=0
-
-local head=Instance.new("Frame",Box)
-head.Size=UDim2.new(1,0,0,26)
-head.BackgroundColor3=Color3.fromRGB(35,35,120)
-head.BorderSizePixel=0
-
-local title=Instance.new("TextLabel",head)
-title.Size=UDim2.new(1,-10,0,26);title.Position=UDim2.new(0,5,0,0)
-title.BackgroundTransparency=1
-title.Text="::::  KILL TRACKER  ::::"
-title.TextColor3=Color3.fromRGB(255,255,255)
-title.TextXAlignment=Enum.TextXAlignment.Left
-title.TextScaled=true
-title.Font=Enum.Font.GothamBold
-
+Box.Size=UDim2.new(0,300,0,300);Box.Position=UDim2.new(1,-310,0,10)
+Box.BackgroundColor3=Color3.fromRGB(8,8,8);Box.BackgroundTransparency=0.15;Box.BorderSizePixel=0
 local list=Instance.new("TextLabel",Box)
-list.Size=UDim2.new(1,-10,0,300);list.Position=UDim2.new(0,5,0,30)
+list.Size=UDim2.new(1,-10,0,300);list.Position=UDim2.new(0,5,0,5)
 list.BackgroundTransparency=1;list.TextColor3=Color3.fromRGB(255,255,255)
 list.TextXAlignment=Enum.TextXAlignment.Left;list.TextYAlignment=Enum.TextYAlignment.Top
 list.Font=Enum.Font.Gotham;list.TextSize=13
-
--- drag on BOTH head and list
-local UIS=game:GetService("UserInputService")
-local drag=false;local off
-local function begin(i)
-	if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then
-		drag=true;off=i.Position-Box.AbsolutePosition
-	end
-end
-head.InputBegan:Connect(begin)
-list.InputBegan:Connect(begin)
-UIS.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButton1 or i.UserInputType==Enum.UserInputType.Touch then drag=false end end)
-UIS.InputChanged:Connect(function(i)
-	if drag and(i.UserInputType==Enum.UserInputType.MouseMovement or i.UserInputType==Enum.UserInputType.Touch)then
-		Box.Position=UDim2.fromOffset(i.Position.X-off.X,i.Position.Y-off.Y)
-	end
-end)
 
 while true do
 	local out=""
@@ -83,8 +46,3 @@ while true do
 	list.Text=out
 	wait(1)
 end
-Done. Now:
-
-Blue bar at top (:::: KILL TRACKER ::::) is the drag handle
-You can also drag by grabbing the player list itself
-Starts top-right, moves anywhere

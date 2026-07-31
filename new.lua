@@ -2,29 +2,47 @@ local P=game:GetService("Players");local LP=P.LocalPlayer
 local pg=LP:WaitForChild("PlayerGui")
 local imp={}
 local function who(s)
-	if type(s)=="string"then for _,p in ipairs(P:GetPlayers())do if p.Name==s or p.DisplayName==s then return p end end end
+	if type(s)=="string"then
+		for _,p in ipairs(P:GetPlayers())do if p.Name==s or p.DisplayName==s then return p end end
+	end
 	if typeof(s)=="Instance"then return s end
-	return nil
 end
-local function find(ct,d)
+local function sc(ct,d)
 	if d>10 then return end
-	local ok,k=pcall(function()return ct:GetChildren()end)
-	if not ok then return end
-	for _,c in ipairs(k)do
+	for _,c in ipairs(ct:GetChildren())do
 		if c.ClassName=="RemoteEvent"and c.Name=="OnKillRemote"then
 			c.OnClientEvent:Connect(function(...)
-				local a={...}
-				local killer=who(a[1]);local victim=who(a[2])
-				if killer and victim then
-					imp[killer.UserId]=true
-				end
+				local a={...};local k=who(a[1]);local v=who(a[2])
+				if k and v then imp[k.UserId]=true end
 			end)
 		end
-		find(c,d+1)
+		sc(c,d+1)
 	end
 end
-find(game,0)
-LP.ChildAdded:Connect(function(c)if c.Name=="states"then imp={}end end)
+sc(game,0)
+LP.ChildAdded:Connect(function(c)if c.Name=="states"then imp={};task.wait(1)end end)
+local function watchStates()
+	local s=LP:FindFirstChild("states")
+	if not s then return end
+	local function onNew(v)
+		imp={}
+	end
+	for _,c in ipairs(s:GetDescendants())do
+		if c.ClassName=="BoolValue"and c.Name=="Alive"then
+			c.Changed:Connect(function(v)
+				if v==true then imp={}end
+			end)
+		end
+		if c.ClassName=="BoolValue"and c.Name=="InGame"then
+			c.Changed:Connect(function(v)
+				if v==true then imp={}end
+			end)
+		end
+	end
+	s.DescendantAdded:Connect(onNew)
+end
+LP.ChildAdded:Connect(function(c)if c.Name=="states"then task.wait(0.5);watchStates()end end)
+task.spawn(function()while true do task.wait(3);watchStates()end end)
 
 local Gui=Instance.new("ScreenGui",pg)
 local Box=Instance.new("Frame",Gui)
